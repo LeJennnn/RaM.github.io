@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="文章归档 - RaM's Blog">
+    <title>归档 · RaM's Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">RaM's Blog</div>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="archive.html">归档</a>
+                <a href="about.html">关于</a>
+                <a href="https://github.com/LeJennnn" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-grid">
+        <main id="archiveContent"></main>
+
+        <aside class="sidebar">
+            <div class="profile-card">
+                <div class="avatar">R</div>
+                <div class="profile-name">RaM</div>
+                <div class="profile-bio">软件工程 · 独立开发者</div>
+                <div class="profile-bio">热爱代码，喜欢折腾</div>
+            </div>
+
+            <div class="stats-card">
+                <div class="card-title">📊 站点统计</div>
+                <ul class="stats-list">
+                    <li><span>文章总数</span><span id="postCount">加载中...</span></li>
+                    <li><span>标签数量</span><span>6</span></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+    // 覆盖 archive 页面的渲染
+    function renderArchivePage() {
+        const grouped = {};
+        articleList.forEach(article => {
+            const year = article.date.slice(0, 4);
+            const month = article.date.slice(5, 7);
+            if (!grouped[year]) grouped[year] = {};
+            if (!grouped[year][month]) grouped[year][month] = [];
+            grouped[year][month].push(article);
+        });
+        
+        let html = '<div class="archive-list">';
+        for (const year of Object.keys(grouped).sort().reverse()) {
+            html += `<div class="archive-year">${year}年</div>`;
+            for (const month of Object.keys(grouped[year]).sort().reverse()) {
+                html += `<div class="archive-month">
+                    <div class="archive-month-title">${month}月</div>
+                    <ul class="archive-items">`;
+                for (const article of grouped[year][month]) {
+                    html += `<li><a href="posts/${article.id}.html">${article.title}</a><span class="archive-date">${article.date}</span></li>`;
+                }
+                html += `</ul></div>`;
+            }
+        }
+        html += '</div>';
+        document.getElementById('archiveContent').innerHTML = html;
+    }
+    
+    updateStats();
+    renderArchivePage();
+</script>
+</body>
+</html>
